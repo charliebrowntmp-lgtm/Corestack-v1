@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import MosaicNav from '@/components/nav/MosaicNav'
 import NewsTicker from '@/components/nav/NewsTicker'
 import { getNews } from '@/lib/api'
+import { MOCK_NEWS } from '@/lib/mock-news'
 import './globals.css'
 
 const geistSans = Geist({
@@ -29,13 +30,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Gracefully handle missing Supabase env vars (before user configures them)
   let newsItems: Awaited<ReturnType<typeof getNews>> = []
   try {
     newsItems = await getNews()
   } catch {
-    // Supabase not configured yet — ticker shows nothing
+    // Supabase not configured — fall through to mock data
   }
+  if (newsItems.length === 0) newsItems = MOCK_NEWS
 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
