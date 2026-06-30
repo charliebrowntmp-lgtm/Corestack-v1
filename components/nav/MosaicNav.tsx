@@ -10,10 +10,14 @@ const navLinks = [
 ]
 
 export default async function MosaicNav() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase.auth.getUser()
+    user = data.user
+  } catch {
+    // Supabase unavailable — render nav without auth state
+  }
 
   return (
     <nav
