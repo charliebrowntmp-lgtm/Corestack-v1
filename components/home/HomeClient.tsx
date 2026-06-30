@@ -9,7 +9,16 @@ import { CATEGORY_LABELS, CATEGORY_LIST } from '@/lib/constants'
 import { formatSalary, daysAgo } from '@/lib/utils'
 import CompanyLogo from '@/components/jobs/CompanyLogo'
 
-// Hardcoded industry stats for the Market Pulse rail
+// ── Constants ─────────────────────────────────────────────────────────────────
+
+const CAT_COLOR: Record<Category, string> = {
+  operations: '#f97316',
+  construction: '#3b82f6',
+  electrical_power: '#eab308',
+  cooling_mechanical: '#8b5cf6',
+  networking: '#22c55e',
+}
+
 const MARKET_PULSE = [
   { label: 'MW Under Construction', value: '34,200', delta: '+18.4% YoY' },
   { label: 'Transformer Lead Time', value: '104 wks', delta: '+12 wks QoQ' },
@@ -22,11 +31,15 @@ const FEATURED_COMPANIES = [
   'Equinix', 'Iron Mountain', 'Digital Realty', 'Meta', 'CyrusOne', 'Vantage',
 ]
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
 function getBadge(job: Job): { label: string; cls: string } | null {
   const ageHours = (Date.now() - new Date(job.created_at).getTime()) / 3_600_000
   if (ageHours < 24) return { label: 'NEW', cls: 'bg-[#3ecf8e] text-black' }
-  if ((job.salary_min ?? 0) >= 110000) return { label: 'FEATURED', cls: 'bg-amber-100 text-amber-800 border border-amber-300' }
-  if ((job.salary_min ?? 0) >= 90000) return { label: 'HOT', cls: 'bg-red-100 text-red-700 border border-red-200' }
+  if ((job.salary_min ?? 0) >= 110000)
+    return { label: 'FEATURED', cls: 'bg-amber-100 text-amber-800 border border-amber-300' }
+  if ((job.salary_min ?? 0) >= 90000)
+    return { label: 'HOT', cls: 'bg-red-100 text-red-700 border border-red-200' }
   return null
 }
 
@@ -37,11 +50,22 @@ function applySort(jobs: Job[], sort: SortKey): Job[] {
     if (sort === 'salary') return (b.salary_min ?? 0) - (a.salary_min ?? 0)
     if (sort === 'newest')
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    // relevance: featured (paid) jobs first, then newest
     const diff = (b.paid_amount_cents ?? 0) - (a.paid_amount_cents ?? 0)
     return diff !== 0 ? diff : new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   })
 }
+
+function excerpt(text: string, max = 100): string {
+  const plain = text
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/[*_`~]/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/\n+/g, ' ')
+    .trim()
+  return plain.length <= max ? plain : plain.slice(0, max).trimEnd() + '…'
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
 
 interface Props {
   jobs: Job[]
@@ -55,17 +79,35 @@ export default function HomeClient({ jobs, news }: Props) {
   const [sort, setSort] = useState<SortKey>('newest')
   const browseRef = useRef<HTMLDivElement>(null)
 
+  const companyCount = useMemo(() => new Set(jobs.map((j) => j.company)).size, [jobs])
+  const remoteCount = useMemo(() => jobs.filter((j) => j.remote).length, [jobs])
+  const recentCount = useMemo(
+    () =>
+      jobs.filter(
+        (j) => Date.now() - new Date(j.created_at).getTime() < 7 * 86_400_000
+      ).length,
+    [jobs]
+  )
+
   const filtered = useMemo(() => {
     const kw = keyword.toLowerCase().trim()
     const loc = location.toLowerCase().trim()
     const result = jobs.filter((job) => {
       if (activeCategory !== 'all' && job.category !== activeCategory) return false
-      if (kw && !job.title.toLowerCase().includes(kw) && !job.company.toLowerCase().includes(kw)) return false
+      if (
+        kw &&
+        !job.title.toLowerCase().includes(kw) &&
+        !job.company.toLowerCase().includes(kw)
+      )
+        return false
       if (loc && !job.location.toLowerCase().includes(loc)) return false
       return true
     })
     return applySort(result, sort)
   }, [jobs, keyword, location, activeCategory, sort])
+
+  const countFor = (cat: Category | 'all') =>
+    cat === 'all' ? jobs.length : jobs.filter((j) => j.category === cat).length
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
@@ -78,13 +120,16 @@ export default function HomeClient({ jobs, news }: Props) {
     setActiveCategory('all')
   }
 
+  const hasActiveFilters = keyword || location || activeCategory !== 'all'
+
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section
         className="relative flex flex-col items-center justify-center px-6 py-28 sm:py-36 text-center overflow-hidden"
         style={{
-          backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.11) 1.2px, transparent 1.2px)',
+          backgroundImage:
+            'radial-gradient(circle, rgba(0,0,0,0.11) 1.2px, transparent 1.2px)',
           backgroundSize: '22px 22px',
           backgroundColor: '#f3f3f3',
         }}
@@ -105,7 +150,9 @@ export default function HomeClient({ jobs, news }: Props) {
         >
           <div className="flex flex-1 items-center border-r border-black px-4 min-w-0">
             <Search size={14} className="text-black/30 flex-shrink-0 mr-3" aria-hidden="true" />
-            <label htmlFor="hero-kw" className="sr-only">Job title or keyword</label>
+            <label htmlFor="hero-kw" className="sr-only">
+              Job title or keyword
+            </label>
             <input
               id="hero-kw"
               type="text"
@@ -117,7 +164,9 @@ export default function HomeClient({ jobs, news }: Props) {
           </div>
           <div className="hidden sm:flex flex-1 items-center border-r border-black px-4 min-w-0">
             <MapPin size={14} className="text-black/30 flex-shrink-0 mr-3" aria-hidden="true" />
-            <label htmlFor="hero-loc" className="sr-only">Location</label>
+            <label htmlFor="hero-loc" className="sr-only">
+              Location
+            </label>
             <input
               id="hero-loc"
               type="text"
@@ -172,7 +221,7 @@ export default function HomeClient({ jobs, news }: Props) {
         <button
           type="button"
           onClick={() => browseRef.current?.scrollIntoView({ behavior: 'smooth' })}
-          className="mt-8 flex items-center gap-2.5 text-sm text-black/40 hover:text-black transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-offset-0 outline-none"
+          className="mt-8 flex items-center gap-2.5 text-sm text-black/40 hover:text-black transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
         >
           Scroll down
           <span className="w-7 h-7 border border-black/20 flex items-center justify-center">
@@ -187,197 +236,295 @@ export default function HomeClient({ jobs, news }: Props) {
         id="jobs"
         style={{
           backgroundImage:
-            'radial-gradient(circle, rgba(0,0,0,0.06) 1.2px, transparent 1.2px), linear-gradient(to bottom, #f3f3f3 0%, #ffffff 45%)',
+            'radial-gradient(circle, rgba(0,0,0,0.07) 1.2px, transparent 1.2px), linear-gradient(to bottom, #f3f3f3 0%, #f0f0f0 20%, #f6f6f6 60%, #fafafa 100%)',
           backgroundSize: '22px 22px, 100% 100%',
         }}
       >
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex gap-0 divide-x divide-black/10">
+        {/* ── Stats strip ─────────────────────────────────── */}
+        <div
+          className="flex divide-x divide-black border-b border-black overflow-x-auto"
+          aria-label="Platform statistics"
+        >
+          {[
+            { label: 'Open roles', value: String(jobs.length) },
+            { label: 'Companies hiring', value: String(companyCount) },
+            { label: 'Remote roles', value: String(remoteCount) },
+            { label: 'Added this week', value: String(recentCount) },
+            { label: 'Specialisations', value: '5' },
+          ].map((s) => (
+            <div key={s.label} className="flex-1 px-6 py-5 min-w-[120px]">
+              <p className="text-2xl font-bold tabular-nums">{s.value}</p>
+              <p className="text-xs text-black/40 mt-1">{s.label}</p>
+            </div>
+          ))}
+        </div>
 
-            {/* Main — job list */}
-            <main className="flex-1 min-w-0 py-6">
-              {/* Sticky list header */}
-              <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm border border-black/10 flex items-center justify-between px-4 py-2.5 mb-3">
-                <div className="flex items-center gap-3">
-                  <span className="font-semibold text-sm">Live roles</span>
-                  <span className="flex items-center gap-1.5 text-xs border border-black/15 px-2 py-0.5 text-black/50">
-                    <span className="w-1.5 h-1.5 bg-[#3ecf8e]" aria-hidden="true" />
-                    <span className="tabular-nums">{filtered.length}</span>
-                  </span>
-                </div>
-                <div className="flex border border-black/15" role="group" aria-label="Sort order">
-                  {(['newest', 'salary', 'relevance'] as const).map((s, i) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setSort(s)}
-                      aria-pressed={sort === s}
-                      className={`px-3 py-1.5 text-xs font-medium capitalize transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none ${sort === s ? 'bg-black text-white' : 'hover:bg-black/5'} ${i > 0 ? 'border-l border-black/15' : ''}`}
-                    >
-                      {s.charAt(0).toUpperCase() + s.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              </div>
+        {/* ── Main layout: job grid + sidebar ─────────────── */}
+        <div className="flex divide-x divide-black">
 
-              {filtered.length === 0 ? (
-                <div className="py-16 text-center text-sm text-black/40 border border-black/10 bg-white">
-                  No roles match your search.{' '}
+          {/* Left: category tiles + sort bar + mosaic job grid */}
+          <div className="flex-1 min-w-0">
+
+            {/* Category tiles */}
+            <div
+              className="grid border-b border-black overflow-x-auto"
+              style={{ gridTemplateColumns: 'repeat(6, minmax(0, 1fr))' }}
+              role="group"
+              aria-label="Filter by category"
+            >
+              {(['all', ...CATEGORY_LIST] as const).map((cat, i) => {
+                const isActive = activeCategory === cat
+                const isAll = cat === 'all'
+                const label = isAll ? 'All Categories' : CATEGORY_LABELS[cat]
+                const color = !isAll ? CAT_COLOR[cat] : '#000'
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setActiveCategory(cat)}
+                    aria-pressed={isActive}
+                    className={[
+                      'p-5 text-left transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none relative',
+                      i > 0 ? 'border-l border-black' : '',
+                      isActive ? 'bg-white' : 'hover:bg-white/60',
+                    ].join(' ')}
+                  >
+                    {/* Colour dot */}
+                    <span
+                      className="block w-2.5 h-2.5 mb-3"
+                      style={{ backgroundColor: isActive ? color : '#d1d5db' }}
+                      aria-hidden="true"
+                    />
+                    <p className="font-semibold text-xs leading-snug line-clamp-2">{label}</p>
+                    <p className="text-[11px] text-black/40 mt-1 tabular-nums">
+                      {countFor(cat)} roles
+                    </p>
+                    {/* Active underline */}
+                    {isActive && (
+                      <span
+                        className="absolute bottom-0 left-0 right-0 h-0.5"
+                        style={{ backgroundColor: color }}
+                        aria-hidden="true"
+                      />
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Sort bar */}
+            <div className="flex items-center justify-between px-5 py-3 border-b border-black bg-white/70 sticky top-0 z-10">
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-black/50">
+                  <span className="font-semibold text-black tabular-nums">{filtered.length}</span>{' '}
+                  {filtered.length === 1 ? 'role' : 'roles'}
+                  {activeCategory !== 'all' && (
+                    <span className="text-black/35"> in {CATEGORY_LABELS[activeCategory]}</span>
+                  )}
+                </span>
+                {hasActiveFilters && (
                   <button
                     type="button"
                     onClick={clearFilters}
-                    className="underline hover:text-black"
+                    className="text-[10px] border border-black/20 px-2 py-0.5 text-black/40 hover:text-black hover:border-black transition-colors focus-visible:ring-1 focus-visible:ring-[#3ecf8e] outline-none"
                   >
-                    Clear filters
+                    Clear ×
                   </button>
-                </div>
-              ) : (
-                <ul role="list" className="space-y-2">
-                  {filtered.map((job) => (
-                    <li
-                      key={job.id}
-                      className="border border-black/10 bg-white hover:border-black/25 transition-colors duration-150"
-                    >
-                      <JobRow job={job} />
+                )}
+              </div>
+              <div
+                className="flex border border-black/20"
+                role="group"
+                aria-label="Sort order"
+              >
+                {(['newest', 'salary', 'relevance'] as const).map((s, i) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setSort(s)}
+                    aria-pressed={sort === s}
+                    className={[
+                      'px-3 py-1.5 text-[11px] font-medium capitalize transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none',
+                      i > 0 ? 'border-l border-black/20' : '',
+                      sort === s ? 'bg-black text-white' : 'hover:bg-black/5',
+                    ].join(' ')}
+                  >
+                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Mosaic job cards */}
+            {filtered.length === 0 ? (
+              <div className="py-20 text-center bg-white border-b border-black">
+                <p className="text-sm text-black/40">No roles match your search.</p>
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="mt-3 text-xs underline hover:text-black text-black/40"
+                >
+                  Clear filters
+                </button>
+              </div>
+            ) : (
+              <ul
+                role="list"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-l border-t border-black"
+              >
+                {filtered.map((job) => (
+                  <li
+                    key={job.id}
+                    className="border-r border-b border-black bg-white"
+                  >
+                    <MosaicJobCard job={job} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Right sidebar */}
+          <aside className="w-56 flex-shrink-0 hidden xl:block" aria-label="Market data and news">
+            <div className="sticky top-0 divide-y divide-black">
+              {/* Market Pulse */}
+              <div className="px-5 py-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-5">
+                  Market Pulse
+                </p>
+                <ul role="list" className="space-y-5">
+                  {MARKET_PULSE.map((stat) => (
+                    <li key={stat.label} className="flex items-start justify-between gap-2">
+                      <span className="text-xs text-black/50 leading-snug">{stat.label}</span>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-sm font-bold tabular-nums">{stat.value}</p>
+                        <p className="text-[10px] text-[#3ecf8e]">↑ {stat.delta}</p>
+                      </div>
                     </li>
                   ))}
                 </ul>
-              )}
-            </main>
-
-            {/* Right — market pulse + news */}
-            <aside className="w-52 flex-shrink-0 hidden xl:block pl-6 py-6">
-              <div className="sticky top-6 space-y-8">
-                {/* Market Pulse */}
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-4">
-                    Market Pulse
-                  </p>
-                  <ul role="list" className="space-y-4">
-                    {MARKET_PULSE.map((stat) => (
-                      <li key={stat.label} className="flex items-start justify-between gap-2">
-                        <span className="text-xs text-black/50 leading-snug">{stat.label}</span>
-                        <div className="text-right flex-shrink-0">
-                          <p className="text-sm font-bold tabular-nums">{stat.value}</p>
-                          <p className="text-[10px] text-[#3ecf8e]">↑ {stat.delta}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Latest News */}
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-4">
-                    Latest News
-                  </p>
-                  <ul role="list" className="space-y-4">
-                    {news.slice(0, 5).map((item) => (
-                      <li key={item.id}>
-                        <a
-                          href={item.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block group focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
-                        >
-                          <p className="text-xs font-medium leading-snug group-hover:underline line-clamp-3">
-                            {item.headline}
-                          </p>
-                          <p className="text-[10px] text-black/40 mt-1">
-                            <span className="text-[#3ecf8e]">{item.source}</span>
-                            {' · '}
-                            {new Date(item.published_at).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                            })}
-                          </p>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/news"
-                    className="mt-4 flex items-center gap-1.5 text-xs text-black/40 hover:text-black transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
-                  >
-                    All news <ArrowRight size={11} aria-hidden="true" />
-                  </Link>
-                </div>
               </div>
-            </aside>
-          </div>
+
+              {/* Latest News */}
+              <div className="px-5 py-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-4">
+                  Latest News
+                </p>
+                <ul role="list" className="space-y-4">
+                  {news.slice(0, 5).map((item) => (
+                    <li key={item.id}>
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block group focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+                      >
+                        <p className="text-xs font-medium leading-snug group-hover:underline line-clamp-3">
+                          {item.headline}
+                        </p>
+                        <p className="text-[10px] text-black/40 mt-1">
+                          <span className="text-[#3ecf8e]">{item.source}</span>
+                          {' · '}
+                          {new Date(item.published_at).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                          })}
+                        </p>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/news"
+                  className="mt-5 flex items-center gap-1.5 text-xs text-black/40 hover:text-black transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+                >
+                  All news <ArrowRight size={11} aria-hidden="true" />
+                </Link>
+              </div>
+
+              {/* Post a job CTA */}
+              <div className="px-5 py-6">
+                <p className="text-xs font-semibold leading-snug mb-2">
+                  Hiring data center talent?
+                </p>
+                <p className="text-[11px] text-black/50 leading-relaxed mb-4">
+                  Reach operations, construction, power, cooling, and networking
+                  professionals.
+                </p>
+                <Link
+                  href="/post"
+                  className="block text-center text-xs font-medium bg-black text-white px-4 py-2.5 transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+                >
+                  Post a Job
+                </Link>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </>
   )
 }
 
-// ── Job row ───────────────────────────────────────────────────────────────────
+// ── Mosaic job card ───────────────────────────────────────────────────────────
 
-function JobRow({ job }: { job: Job }) {
+function MosaicJobCard({ job }: { job: Job }) {
   const badge = getBadge(job)
   const salary = formatSalary(job.salary_min, job.salary_max)
   const hasSalary = job.salary_min !== null || job.salary_max !== null
 
   return (
-    <div className="flex items-start gap-4 px-5 py-4 hover:bg-black/[0.02] transition-colors">
-      <CompanyLogo company={job.company} size={40} />
-
-      <div className="flex-1 min-w-0">
-        {/* Title row */}
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div className="flex items-center gap-2 flex-wrap min-w-0">
-            <Link
-              href={`/jobs/${job.id}`}
-              className="font-semibold text-sm leading-snug hover:underline focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
-            >
-              {job.title}
-            </Link>
-            {badge && (
-              <span
-                className={`text-[10px] font-bold px-1.5 py-0.5 uppercase tracking-wide flex-shrink-0 ${badge.cls}`}
-              >
-                {badge.label}
-              </span>
-            )}
-          </div>
-          <span className="text-xs text-black/30 whitespace-nowrap flex-shrink-0">
-            {daysAgo(job.created_at)}
+    <Link
+      href={`/jobs/${job.id}`}
+      className="flex flex-col p-5 min-h-[200px] h-full group transition-colors duration-150 hover:bg-black/[0.02] focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none"
+    >
+      {/* Header: logo + badge */}
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <CompanyLogo company={job.company} size={40} />
+        {badge && (
+          <span
+            className={`text-[10px] font-bold px-1.5 py-0.5 uppercase tracking-wide flex-shrink-0 ${badge.cls}`}
+          >
+            {badge.label}
           </span>
-        </div>
-
-        {/* Company + division */}
-        <p className="text-xs text-black/50 mt-0.5">
-          {job.company}
-          <span className="text-black/25 mx-1">·</span>
-          <span className="text-black/35">{CATEGORY_LABELS[job.category]}</span>
-        </p>
-
-        {/* Meta chips */}
-        <div className="flex items-center gap-2 mt-1.5 flex-wrap text-xs text-black/40">
-          <span>{job.location}</span>
-          {hasSalary && (
-            <>
-              <span className="text-black/20">|</span>
-              <span className="text-[#3ecf8e] font-medium tabular-nums">{salary}</span>
-            </>
-          )}
-          {job.remote && (
-            <>
-              <span className="text-black/20">|</span>
-              <span>Remote</span>
-            </>
-          )}
-        </div>
+        )}
       </div>
 
-      {/* Apply CTA */}
-      <Link
-        href={`/jobs/${job.id}`}
-        className="self-center flex-shrink-0 text-xs font-medium border border-black px-3 py-1.5 hover:bg-black hover:text-white transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-offset-0 outline-none whitespace-nowrap"
-        aria-label={`Apply for ${job.title} at ${job.company}`}
-      >
-        Apply →
-      </Link>
-    </div>
+      {/* Title */}
+      <h3 className="font-bold text-sm leading-snug line-clamp-2 mb-1.5 group-hover:text-black/70 transition-colors">
+        {job.title}
+      </h3>
+
+      {/* Company + location */}
+      <p className="text-xs text-black/50 mb-2">
+        {job.company}
+        <span className="mx-1.5 text-black/20">·</span>
+        {job.location}
+      </p>
+
+      {/* Description excerpt — fills remaining space */}
+      <p className="text-[11px] text-black/40 leading-relaxed line-clamp-2 flex-1 mb-4">
+        {excerpt(job.description)}
+      </p>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between gap-2 pt-3.5 border-t border-black/[0.07] flex-wrap">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-[10px] border border-black/15 px-2 py-0.5 whitespace-nowrap">
+            {CATEGORY_LABELS[job.category]}
+          </span>
+          {job.remote && (
+            <span className="text-[10px] border border-black/15 px-2 py-0.5">Remote</span>
+          )}
+        </div>
+        {hasSalary ? (
+          <span className="text-[11px] font-semibold text-[#3ecf8e] tabular-nums flex-shrink-0">
+            {salary}
+          </span>
+        ) : (
+          <span className="text-[10px] text-black/25 flex-shrink-0">{daysAgo(job.created_at)}</span>
+        )}
+      </div>
+    </Link>
   )
 }
