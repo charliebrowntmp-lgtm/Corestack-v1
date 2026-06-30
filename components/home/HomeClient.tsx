@@ -55,7 +55,7 @@ function applySort(jobs: Job[], sort: SortKey): Job[] {
   })
 }
 
-function excerpt(text: string, max = 100): string {
+function excerpt(text: string, max = 140): string {
   const plain = text
     .replace(/#{1,6}\s+/g, '')
     .replace(/[*_`~]/g, '')
@@ -476,14 +476,14 @@ function MosaicJobCard({ job }: { job: Job }) {
   return (
     <Link
       href={`/jobs/${job.id}`}
-      className="flex flex-col p-5 min-h-[200px] h-full group transition-colors duration-150 hover:bg-black/[0.02] focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none"
+      className="flex flex-col p-7 min-h-[300px] h-full group transition-colors duration-150 hover:bg-black/[0.02] focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none"
     >
       {/* Header: logo + badge */}
-      <div className="flex items-start justify-between gap-3 mb-4">
-        <CompanyLogo company={job.company} size={40} />
+      <div className="flex items-start justify-between gap-3 mb-5">
+        <CompanyLogo company={job.company} size={48} />
         {badge && (
           <span
-            className={`text-[10px] font-bold px-1.5 py-0.5 uppercase tracking-wide flex-shrink-0 ${badge.cls}`}
+            className={`text-[10px] font-bold px-2 py-1 uppercase tracking-wide flex-shrink-0 ${badge.cls}`}
           >
             {badge.label}
           </span>
@@ -491,38 +491,38 @@ function MosaicJobCard({ job }: { job: Job }) {
       </div>
 
       {/* Title */}
-      <h3 className="font-bold text-sm leading-snug line-clamp-2 mb-1.5 group-hover:text-black/70 transition-colors">
+      <h3 className="font-bold text-base leading-snug line-clamp-2 mb-2 group-hover:text-black/70 transition-colors">
         {job.title}
       </h3>
 
       {/* Company + location */}
-      <p className="text-xs text-black/50 mb-2">
+      <p className="text-sm text-black/50 mb-3">
         {job.company}
         <span className="mx-1.5 text-black/20">·</span>
         {job.location}
       </p>
 
       {/* Description excerpt — fills remaining space */}
-      <p className="text-[11px] text-black/40 leading-relaxed line-clamp-2 flex-1 mb-4">
+      <p className="text-xs text-black/40 leading-relaxed line-clamp-3 flex-1 mb-5">
         {excerpt(job.description)}
       </p>
 
       {/* Footer */}
-      <div className="flex items-center justify-between gap-2 pt-3.5 border-t border-black/[0.07] flex-wrap">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[10px] border border-black/15 px-2 py-0.5 whitespace-nowrap">
+      <div className="flex items-center justify-between gap-2 pt-4 border-t border-black/[0.07] flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-[11px] border border-black/15 px-2.5 py-1 whitespace-nowrap">
             {CATEGORY_LABELS[job.category]}
           </span>
           {job.remote && (
-            <span className="text-[10px] border border-black/15 px-2 py-0.5">Remote</span>
+            <span className="text-[11px] border border-black/15 px-2.5 py-1">Remote</span>
           )}
         </div>
         {hasSalary ? (
-          <span className="text-[11px] font-semibold text-[#3ecf8e] tabular-nums flex-shrink-0">
+          <span className="text-xs font-semibold text-[#3ecf8e] tabular-nums flex-shrink-0">
             {salary}
           </span>
         ) : (
-          <span className="text-[10px] text-black/25 flex-shrink-0">{daysAgo(job.created_at)}</span>
+          <span className="text-[11px] text-black/25 flex-shrink-0">{daysAgo(job.created_at)}</span>
         )}
       </div>
     </Link>
