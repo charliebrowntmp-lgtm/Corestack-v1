@@ -1,3 +1,14 @@
+import Image from 'next/image'
+
+// Real logos served from /public/Company Logos/
+// Keys must match the company name exactly as it appears in job data
+const REAL_LOGOS: Record<string, string> = {
+  'Turner Construction': '/Company Logos/Turner Logo.webp',
+  'Schneider Electric': '/Company Logos/SchneiderElectriclogo.webp',
+  'Meta': '/Company Logos/Metalogo.png',
+  'Amazon Web Services': '/Company Logos/AWSlogo.webp',
+}
+
 const PALETTES = [
   { bg: '#f0fdf4', text: '#166534' },
   { bg: '#eff6ff', text: '#1e40af' },
@@ -29,6 +40,25 @@ interface Props {
 }
 
 export default function CompanyLogo({ company, size = 36 }: Props) {
+  const logoSrc = REAL_LOGOS[company]
+
+  if (logoSrc) {
+    return (
+      <div
+        style={{ width: size, height: size, flexShrink: 0 }}
+        className="border border-black/10 bg-white flex items-center justify-center overflow-hidden p-1"
+      >
+        <Image
+          src={logoSrc}
+          alt={`${company} logo`}
+          width={size}
+          height={size}
+          className="w-full h-full object-contain"
+        />
+      </div>
+    )
+  }
+
   const { bg, text } = palette(company)
   return (
     <div
