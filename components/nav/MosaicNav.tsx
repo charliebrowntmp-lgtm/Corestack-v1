@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { createClient } from '@/lib/supabase/server'
-import SignOutTile from './SignOutTile'
+import NavAuth from '@/components/NavAuth'
 
 const navLinks = [
   { href: '/jobs', label: 'Jobs' },
@@ -10,16 +9,7 @@ const navLinks = [
   { href: '/dashboard', label: 'Dashboard' },
 ]
 
-export default async function MosaicNav() {
-  let user = null
-  try {
-    const supabase = await createClient()
-    const { data } = await supabase.auth.getUser()
-    user = data.user
-  } catch {
-    // Supabase unavailable — render nav without auth state
-  }
-
+export default function MosaicNav() {
   return (
     <nav
       className="flex items-stretch h-12 border-b border-black overflow-x-auto"
@@ -55,17 +45,8 @@ export default async function MosaicNav() {
         </Link>
       ))}
 
-      {/* Auth tiles */}
-      {user ? (
-        <SignOutTile />
-      ) : (
-        <Link
-          href="/signin"
-          className="flex items-center px-4 text-sm font-medium border-l border-black transition-colors duration-150 hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-offset-0 outline-none whitespace-nowrap"
-        >
-          Sign In
-        </Link>
-      )}
+      {/* Auth tile */}
+      <NavAuth />
 
       {/* Post a Job CTA tile */}
       <Link
