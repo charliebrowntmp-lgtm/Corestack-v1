@@ -529,7 +529,7 @@ function MosaicJobCard({ job }: { job: Job }) {
         </div>
       </div>
 
-      {/* Right: salary + arrow */}
+      {/* Right: salary + Apply button */}
       <div className="flex-shrink-0 flex flex-col items-end justify-between self-stretch py-0.5">
         {hasSalary ? (
           <span className="text-sm font-semibold text-[#3ecf8e] tabular-nums">
@@ -538,11 +538,9 @@ function MosaicJobCard({ job }: { job: Job }) {
         ) : (
           <span />
         )}
-        <ArrowRight
-          size={16}
-          className="text-black/20 group-hover:text-black transition-colors mt-4"
-          aria-hidden="true"
-        />
+        <span className="mt-4 border border-black px-5 py-2 text-xs font-semibold uppercase tracking-wide transition-colors group-hover:bg-black group-hover:text-white">
+          Apply
+        </span>
       </div>
     </Link>
   )
