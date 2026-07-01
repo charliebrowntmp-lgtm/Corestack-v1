@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef } from 'react'
 import { Search, MapPin, ChevronDown, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Job, NewsItem } from '@/lib/types'
 import type { Category } from '@/lib/types'
 import { CATEGORY_LABELS, CATEGORY_LIST } from '@/lib/constants'
@@ -154,118 +155,131 @@ export default function HomeClient({ jobs, news }: Props) {
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section
         className="relative flex flex-col items-center justify-center px-6 py-28 sm:py-36 text-center overflow-hidden"
-        style={{
-          backgroundImage: [
-            'linear-gradient(to bottom, transparent 55%, rgba(255,255,255,1) 100%)',
-            'linear-gradient(to bottom, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.48) 45%, rgba(0,0,0,0) 72%)',
-            "url('/backgroundimage/hero-datacenter.png')",
-          ].join(', '),
-          backgroundSize: '100% 100%, 100% 100%, cover',
-          backgroundPosition: '0 0, 0 0, center 40%',
-          backgroundRepeat: 'no-repeat, no-repeat, no-repeat',
-          backgroundColor: '#0a0a0a',
-        }}
+        style={{ backgroundColor: '#0a0a0a' }}
       >
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] font-black uppercase tracking-tight leading-none text-balance max-w-4xl text-white">
-          Infrastructure Jobs For The People Who Keep The World Running.
-        </h1>
-
-        <p className="mt-6 text-base sm:text-lg max-w-[30rem] leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
-          Corestack aggregates data center and AI infrastructure roles from top
-          employers&thinsp;—&thinsp;updated daily.
-        </p>
-
-        {/* Two-field search bar */}
-        <form
-          onSubmit={handleSearch}
-          className="mt-9 flex w-full max-w-3xl bg-white border border-white/80"
-        >
-          <div className="flex flex-1 items-center border-r border-black px-4 min-w-0">
-            <Search size={14} className="text-black/30 flex-shrink-0 mr-3" aria-hidden="true" />
-            <label htmlFor="hero-kw" className="sr-only">
-              Job title or keyword
-            </label>
-            <input
-              id="hero-kw"
-              type="text"
-              placeholder="Job title or keyword…"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              className="flex-1 py-3.5 text-sm bg-transparent outline-none placeholder:text-black/30 min-w-0"
-            />
-          </div>
-          <div className="hidden sm:flex flex-1 items-center border-r border-black px-4 min-w-0">
-            <MapPin size={14} className="text-black/30 flex-shrink-0 mr-3" aria-hidden="true" />
-            <label htmlFor="hero-loc" className="sr-only">
-              Location
-            </label>
-            <input
-              id="hero-loc"
-              type="text"
-              placeholder="Location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="flex-1 py-3.5 text-sm bg-transparent outline-none placeholder:text-black/30 min-w-0"
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-black text-white px-6 py-3.5 text-sm font-medium whitespace-nowrap transition-colors duration-150 hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none"
-          >
-            Search
-          </button>
-        </form>
-
-        {/* Category quick-filters */}
+        {/* Background photo */}
+        <Image
+          src="/backgroundimage/hero-datacenter.png"
+          alt=""
+          fill
+          priority
+          style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
+        />
+        {/* Gradient: dark at top for legibility → transparent mid → white at bottom */}
         <div
-          className="flex mt-3 overflow-x-auto max-w-2xl w-full"
-          role="group"
-          aria-label="Filter by category"
-        >
-          {(['all', ...CATEGORY_LIST] as const).map((cat, i) => {
-            const isActive = activeCategory === cat
-            const label = cat === 'all' ? 'All' : CATEGORY_LABELS[cat]
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setActiveCategory(cat)}
-                className={[
-                  'px-4 py-2 text-xs font-medium whitespace-nowrap border-t border-b border-r border-black transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none',
-                  i === 0 ? 'border-l' : '',
-                  isActive ? 'bg-black text-white' : 'bg-white hover:bg-[#3ecf8e]',
-                ].join(' ')}
-              >
-                {label}
-              </button>
-            )
-          })}
-        </div>
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            backgroundImage: [
+              'linear-gradient(to bottom, transparent 58%, rgba(255,255,255,1) 100%)',
+              'linear-gradient(to bottom, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.45) 40%, transparent 68%)',
+            ].join(', '),
+          }}
+        />
 
-        {/* Hiring companies strip — logo tiles */}
-        <div className="mt-12 flex flex-col items-center gap-3">
-          <p className="text-[10px] uppercase tracking-widest font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            Roles from top employers
+        {/* Content sits above image + overlay */}
+        <div className="relative z-10 flex flex-col items-center w-full">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] font-black uppercase tracking-tight leading-none text-balance max-w-4xl text-white">
+            Infrastructure Jobs For The People Who Keep The World Running.
+          </h1>
+
+          <p className="mt-6 text-base sm:text-lg max-w-[30rem] leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
+            Corestack aggregates data center and AI infrastructure roles from top
+            employers&thinsp;—&thinsp;updated daily.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            {LOGO_STRIP_COMPANIES.map((c) => (
-              <CompanyLogo key={c} company={c} size={72} radius="14px" />
-            ))}
-          </div>
-        </div>
 
-        {/* Scroll down */}
-        <button
-          type="button"
-          onClick={() => browseRef.current?.scrollIntoView({ behavior: 'smooth' })}
-          className="mt-8 flex items-center gap-2.5 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
-          style={{ color: 'rgba(255,255,255,0.45)' }}
-        >
-          Scroll down
-          <span className="w-7 h-7 flex items-center justify-center" style={{ border: '1px solid rgba(255,255,255,0.25)' }}>
-            <ChevronDown size={14} aria-hidden="true" />
-          </span>
-        </button>
+          {/* Two-field search bar */}
+          <form
+            onSubmit={handleSearch}
+            className="mt-9 flex w-full max-w-3xl bg-white border border-white"
+          >
+            <div className="flex flex-1 items-center border-r border-black px-4 min-w-0">
+              <Search size={14} className="text-black/30 flex-shrink-0 mr-3" aria-hidden="true" />
+              <label htmlFor="hero-kw" className="sr-only">
+                Job title or keyword
+              </label>
+              <input
+                id="hero-kw"
+                type="text"
+                placeholder="Job title or keyword…"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                className="flex-1 py-3.5 text-sm bg-transparent outline-none placeholder:text-black/30 min-w-0"
+              />
+            </div>
+            <div className="hidden sm:flex flex-1 items-center border-r border-black px-4 min-w-0">
+              <MapPin size={14} className="text-black/30 flex-shrink-0 mr-3" aria-hidden="true" />
+              <label htmlFor="hero-loc" className="sr-only">
+                Location
+              </label>
+              <input
+                id="hero-loc"
+                type="text"
+                placeholder="Location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="flex-1 py-3.5 text-sm bg-transparent outline-none placeholder:text-black/30 min-w-0"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-black text-white px-6 py-3.5 text-sm font-medium whitespace-nowrap transition-colors duration-150 hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none"
+            >
+              Search
+            </button>
+          </form>
+
+          {/* Category quick-filters */}
+          <div
+            className="flex mt-3 overflow-x-auto max-w-2xl w-full"
+            role="group"
+            aria-label="Filter by category"
+          >
+            {(['all', ...CATEGORY_LIST] as const).map((cat, i) => {
+              const isActive = activeCategory === cat
+              const label = cat === 'all' ? 'All' : CATEGORY_LABELS[cat]
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setActiveCategory(cat)}
+                  className={[
+                    'px-4 py-2 text-xs font-medium whitespace-nowrap border-t border-b border-r border-black transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none',
+                    i === 0 ? 'border-l' : '',
+                    isActive ? 'bg-black text-white' : 'bg-white hover:bg-[#3ecf8e]',
+                  ].join(' ')}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Hiring companies strip — logo tiles */}
+          <div className="mt-12 flex flex-col items-center gap-3">
+            <p className="text-[10px] uppercase tracking-widest font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              Roles from top employers
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {LOGO_STRIP_COMPANIES.map((c) => (
+                <CompanyLogo key={c} company={c} size={72} radius="14px" />
+              ))}
+            </div>
+          </div>
+
+          {/* Scroll down */}
+          <button
+            type="button"
+            onClick={() => browseRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            className="mt-8 flex items-center gap-2.5 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+            style={{ color: 'rgba(255,255,255,0.45)' }}
+          >
+            Scroll down
+            <span className="w-7 h-7 flex items-center justify-center" style={{ border: '1px solid rgba(255,255,255,0.25)' }}>
+              <ChevronDown size={14} aria-hidden="true" />
+            </span>
+          </button>
+        </div>
       </section>
 
       {/* ── BROWSE ───────────────────────────────────────────────────────── */}
