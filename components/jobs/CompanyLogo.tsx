@@ -1,12 +1,20 @@
 import Image from 'next/image'
 
-// Real logos served from /public/Company Logos/
-// Keys must match the company name exactly as it appears in job data
-const REAL_LOGOS: Record<string, string> = {
-  'Turner Construction': '/Company Logos/Turner Logo.webp',
-  'Schneider Electric': '/Company Logos/SchneiderElectriclogo.webp',
-  'Meta': '/Company Logos/Metalogo.png',
-  'Amazon Web Services': '/Company Logos/AWSlogo.webp',
+type LogoConfig = {
+  src: string
+  // scale > 1 zooms in (crops) within the fixed container — use for logos
+  // with excessive whitespace in the source file
+  scale?: number
+}
+
+const REAL_LOGOS: Record<string, LogoConfig> = {
+  'Equinix':            { src: '/Company Logos/Equinix.png' },
+  'Iron Mountain':      { src: '/Company Logos/IronMountain.png' },
+  'CyrusOne':           { src: '/Company Logos/cyrus-one.png' },
+  'Meta':               { src: '/Company Logos/Metalogo.png', scale: 1.9 },
+  'Schneider Electric': { src: '/Company Logos/SchneiderElectriclogo.webp' },
+  'Turner Construction':{ src: '/Company Logos/Turner Logo.webp' },
+  'Amazon Web Services':{ src: '/Company Logos/AWSlogo.webp' },
 }
 
 const PALETTES = [
@@ -37,23 +45,32 @@ function initials(name: string) {
 interface Props {
   company: string
   size?: number
+  /** Pass true to render a circle instead of a square (use inline borderRadius to bypass global reset) */
+  round?: boolean
 }
 
-export default function CompanyLogo({ company, size = 36 }: Props) {
-  const logoSrc = REAL_LOGOS[company]
+export default function CompanyLogo({ company, size = 36, round = false }: Props) {
+  const logo = REAL_LOGOS[company]
+  const borderRadius = round ? '50%' : 0
 
-  if (logoSrc) {
+  if (logo) {
     return (
       <div
-        style={{ width: size, height: size, flexShrink: 0 }}
-        className="border border-black/10 bg-white flex items-center justify-center overflow-hidden p-1"
+        style={{ width: size, height: size, flexShrink: 0, borderRadius, overflow: 'hidden' }}
+        className="border border-black/10 bg-white flex items-center justify-center"
       >
         <Image
-          src={logoSrc}
+          src={logo.src}
           alt={`${company} logo`}
           width={size}
           height={size}
-          className="w-full h-full object-contain"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            padding: '4px',
+            transform: logo.scale ? `scale(${logo.scale})` : undefined,
+          }}
         />
       </div>
     )
@@ -70,6 +87,7 @@ export default function CompanyLogo({ company, size = 36 }: Props) {
         color: text,
         fontSize: Math.round(size * 0.38),
         flexShrink: 0,
+        borderRadius,
       }}
       className="flex items-center justify-center font-semibold border border-black/10"
     >

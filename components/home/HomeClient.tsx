@@ -27,8 +27,14 @@ const MARKET_PULSE = [
   { label: 'Active US Projects', value: '2,847', delta: '+47 this week' },
 ]
 
-const FEATURED_COMPANIES = [
-  'Equinix', 'Iron Mountain', 'Digital Realty', 'Meta', 'CyrusOne', 'Vantage',
+// Companies with real logos — shown as circular logo tiles in the hero strip
+const LOGO_STRIP_COMPANIES = [
+  'Equinix',
+  'Iron Mountain',
+  'Meta',
+  'CyrusOne',
+  'Turner Construction',
+  'Schneider Electric',
 ]
 
 const JOBS_PREVIEW = 5
@@ -231,11 +237,19 @@ export default function HomeClient({ jobs, news }: Props) {
           })}
         </div>
 
-        {/* Hiring companies strip */}
-        <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2 mt-12 text-sm text-black/30 select-none">
-          {FEATURED_COMPANIES.map((c) => (
-            <span key={c}>{c}</span>
-          ))}
+        {/* Hiring companies strip — circular logo tiles */}
+        <div className="mt-12 flex flex-col items-center gap-3">
+          <p className="text-[10px] uppercase tracking-widest text-black/30 font-medium">
+            Roles from top employers
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {LOGO_STRIP_COMPANIES.map((c) => (
+              <div key={c} className="flex flex-col items-center gap-1.5">
+                <CompanyLogo company={c} size={52} round />
+                <span className="text-[10px] text-black/30 whitespace-nowrap">{c}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Scroll down */}
