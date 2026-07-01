@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import SignOutTile from './SignOutTile'
 
@@ -27,25 +28,32 @@ export default async function MosaicNav() {
       {/* Logo tile */}
       <Link
         href="/"
-        className="flex items-center px-5 bg-black text-white text-xs font-bold tracking-widest border-r border-black whitespace-nowrap flex-shrink-0 focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none"
+        className="flex items-center px-4 border-r border-black bg-white flex-shrink-0 focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none"
         aria-label="Corestack home"
       >
-        CORESTACK
+        <Image
+          src="/corestack-logo.webp"
+          alt="Corestack"
+          width={120}
+          height={28}
+          className="h-7 w-auto object-contain"
+          priority
+        />
       </Link>
 
-      {/* Nav links */}
+      {/* Spacer pushes nav links to the right */}
+      <div className="flex-1" />
+
+      {/* Nav links — right-aligned */}
       {navLinks.map((link) => (
         <Link
           key={link.href}
           href={link.href}
-          className="flex items-center px-4 text-sm font-medium border-r border-black transition-colors duration-150 hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-offset-0 outline-none whitespace-nowrap"
+          className="flex items-center px-4 text-sm font-medium border-l border-black transition-colors duration-150 hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-offset-0 outline-none whitespace-nowrap"
         >
           {link.label}
         </Link>
       ))}
-
-      {/* Spacer */}
-      <div className="flex-1" />
 
       {/* Auth tiles */}
       {user ? (
@@ -53,7 +61,7 @@ export default async function MosaicNav() {
       ) : (
         <Link
           href="/signin"
-          className="flex items-center px-4 text-sm font-medium border-l border-black transition-colors duration-150 hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-offset-0 outline-none whitespace-nowrap"
+          className="flex items-center px-4 text-sm font-medium border-l border-black transition-colors duration-150 hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-offset-0 outline-none whitespace-nowrap"
         >
           Sign In
         </Link>

@@ -106,7 +106,7 @@ function SavedList() {
             <div className="flex-shrink-0 flex flex-col items-end gap-2">
               <Link
                 href={`/jobs/${job.id}`}
-                className="text-[11px] border border-black px-3 py-1.5 transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+                className="text-[11px] border border-black px-3 py-1.5 transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
               >
                 View Role
               </Link>
@@ -215,28 +215,28 @@ export default async function DashboardPage() {
               <div className="space-y-2">
                 <Link
                   href="/jobs"
-                  className="flex items-center justify-between px-4 py-3 border border-black text-sm font-medium transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none group"
+                  className="flex items-center justify-between px-4 py-3 border border-black text-sm font-medium transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none group"
                 >
                   Browse Jobs
                   <span className="text-black/30 group-hover:text-white transition-colors">→</span>
                 </Link>
                 <Link
                   href="/post"
-                  className="flex items-center justify-between px-4 py-3 border border-black text-sm font-medium transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none group"
+                  className="flex items-center justify-between px-4 py-3 border border-black text-sm font-medium transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none group"
                 >
                   Post a Job
                   <span className="text-black/30 group-hover:text-white transition-colors">→</span>
                 </Link>
                 <Link
                   href="/resources"
-                  className="flex items-center justify-between px-4 py-3 border border-black text-sm font-medium transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none group"
+                  className="flex items-center justify-between px-4 py-3 border border-black text-sm font-medium transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none group"
                 >
                   Training & Resources
                   <span className="text-black/30 group-hover:text-white transition-colors">→</span>
                 </Link>
                 <Link
                   href="/news"
-                  className="flex items-center justify-between px-4 py-3 border border-black text-sm font-medium transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none group"
+                  className="flex items-center justify-between px-4 py-3 border border-black text-sm font-medium transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none group"
                 >
                   Industry News
                   <span className="text-black/30 group-hover:text-white transition-colors">→</span>
@@ -269,7 +269,7 @@ export default async function DashboardPage() {
               </div>
               <Link
                 href="/signin"
-                className="mt-5 block text-center text-xs font-semibold uppercase tracking-wide border border-black px-4 py-2.5 transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+                className="mt-5 block text-center text-xs font-semibold uppercase tracking-wide border border-black px-4 py-2.5 transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
               >
                 Sign In to Continue
               </Link>

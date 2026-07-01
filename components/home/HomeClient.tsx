@@ -167,7 +167,7 @@ export default function HomeClient({ jobs, news }: Props) {
         {/* Two-field search bar */}
         <form
           onSubmit={handleSearch}
-          className="mt-9 flex w-full max-w-2xl bg-white border border-black"
+          className="mt-9 flex w-full max-w-3xl bg-white border border-black"
         >
           <div className="flex flex-1 items-center border-r border-black px-4 min-w-0">
             <Search size={14} className="text-black/30 flex-shrink-0 mr-3" aria-hidden="true" />
@@ -412,7 +412,7 @@ export default function HomeClient({ jobs, news }: Props) {
                   </p>
                   <Link
                     href="/jobs"
-                    className="border border-black px-6 py-2.5 text-xs font-semibold uppercase tracking-wide transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+                    className="border border-black px-6 py-2.5 text-xs font-semibold uppercase tracking-wide transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
                   >
                     Explore More Jobs →
                   </Link>
@@ -626,7 +626,7 @@ export default function HomeClient({ jobs, news }: Props) {
           </p>
           <Link
             href="/resources"
-            className="flex-shrink-0 border border-black px-6 py-2.5 text-xs font-semibold uppercase tracking-wide transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none whitespace-nowrap"
+            className="flex-shrink-0 border border-black px-6 py-2.5 text-xs font-semibold uppercase tracking-wide transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none whitespace-nowrap"
           >
             View All Resources →
           </Link>
@@ -702,7 +702,7 @@ function MosaicJobCard({ job }: { job: Job }) {
         ) : (
           <span />
         )}
-        <span className="mt-4 border border-black px-5 py-2 text-xs font-semibold uppercase tracking-wide transition-colors group-hover:bg-black group-hover:text-white">
+        <span className="mt-4 border border-black px-5 py-2 text-xs font-semibold uppercase tracking-wide transition-colors group-hover:bg-[#3ecf8e] group-hover:text-black">
           Apply
         </span>
       </div>

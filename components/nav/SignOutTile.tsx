@@ -16,7 +16,7 @@ export default function SignOutTile() {
   return (
     <button
       onClick={handleSignOut}
-      className="h-full px-4 text-sm font-medium border-l border-black transition-colors duration-150 hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-offset-0 outline-none whitespace-nowrap"
+      className="h-full px-4 text-sm font-medium border-l border-black transition-colors duration-150 hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-offset-0 outline-none whitespace-nowrap"
       aria-label="Sign out of your account"
     >
       Sign Out

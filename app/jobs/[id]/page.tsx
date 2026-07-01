@@ -284,7 +284,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://corestack.io/jobs/${job.id}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 text-center text-[11px] border border-black px-3 py-2 transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+                  className="flex-1 text-center text-[11px] border border-black px-3 py-2 transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
                 >
                   LinkedIn
                 </a>
@@ -292,7 +292,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${job.title} at ${job.company} — via @corestack`)}&url=${encodeURIComponent(`https://corestack.io/jobs/${job.id}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 text-center text-[11px] border border-black px-3 py-2 transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+                  className="flex-1 text-center text-[11px] border border-black px-3 py-2 transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
                 >
                   X / Twitter
                 </a>
