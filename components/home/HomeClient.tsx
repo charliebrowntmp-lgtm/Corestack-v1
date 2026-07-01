@@ -154,8 +154,8 @@ export default function HomeClient({ jobs, news }: Props) {
     <>
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section
-        className="relative flex flex-col items-center justify-center px-6 py-28 sm:py-36 text-center overflow-hidden"
-        style={{ backgroundColor: '#0a0a0a' }}
+        className="relative flex flex-col items-center justify-center px-6 py-28 sm:py-36 text-center overflow-hidden mx-4 sm:mx-6 mt-4"
+        style={{ backgroundColor: '#e5e5e5', borderRadius: '20px' }}
       >
         {/* Background photo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -166,25 +166,22 @@ export default function HomeClient({ jobs, news }: Props) {
           className="absolute inset-0 w-full h-full"
           style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
         />
-        {/* Gradient: dark at top for legibility → transparent mid → white at bottom */}
+        {/* Light overlay at top for black-text legibility, fades to white at bottom */}
         <div
           aria-hidden="true"
           className="absolute inset-0"
           style={{
-            backgroundImage: [
-              'linear-gradient(to bottom, transparent 58%, rgba(255,255,255,1) 100%)',
-              'linear-gradient(to bottom, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.45) 40%, transparent 68%)',
-            ].join(', '),
+            background: 'linear-gradient(to bottom, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.50) 40%, rgba(255,255,255,0.10) 65%, rgba(255,255,255,1) 100%)',
           }}
         />
 
         {/* Content sits above image + overlay */}
         <div className="relative z-10 flex flex-col items-center w-full">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] font-black uppercase tracking-tight leading-none text-balance max-w-4xl text-white">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] font-black uppercase tracking-tight leading-none text-balance max-w-4xl text-black">
             Infrastructure Jobs For The People Who Keep The World Running.
           </h1>
 
-          <p className="mt-6 text-base sm:text-lg max-w-[30rem] leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
+          <p className="mt-6 text-base sm:text-lg text-black/55 max-w-[30rem] leading-relaxed">
             Corestack aggregates data center and AI infrastructure roles from top
             employers&thinsp;—&thinsp;updated daily.
           </p>
@@ -258,7 +255,7 @@ export default function HomeClient({ jobs, news }: Props) {
 
           {/* Hiring companies strip — logo tiles */}
           <div className="mt-12 flex flex-col items-center gap-3">
-            <p className="text-[10px] uppercase tracking-widest font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <p className="text-[10px] uppercase tracking-widest font-medium text-black/35">
               Roles from top employers
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
@@ -272,11 +269,10 @@ export default function HomeClient({ jobs, news }: Props) {
           <button
             type="button"
             onClick={() => browseRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            className="mt-8 flex items-center gap-2.5 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
-            style={{ color: 'rgba(255,255,255,0.45)' }}
+            className="mt-8 flex items-center gap-2.5 text-sm text-black/40 hover:text-black transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
           >
             Scroll down
-            <span className="w-7 h-7 flex items-center justify-center" style={{ border: '1px solid rgba(255,255,255,0.25)' }}>
+            <span className="w-7 h-7 border border-black/20 flex items-center justify-center">
               <ChevronDown size={14} aria-hidden="true" />
             </span>
           </button>
