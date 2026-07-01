@@ -4,13 +4,6 @@ import { updateSession } from '@/lib/supabase/middleware'
 export async function middleware(request: NextRequest) {
   const { response, user } = await updateSession(request)
 
-  if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/signin'
-    url.searchParams.set('next', request.nextUrl.pathname)
-    return NextResponse.redirect(url)
-  }
-
   return response
 }
 
