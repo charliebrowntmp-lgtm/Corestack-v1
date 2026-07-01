@@ -290,30 +290,11 @@ export default function HomeClient({ jobs, news }: Props) {
           backgroundColor: '#ffffff',
         }}
       >
-        {/* ── Stats strip ─────────────────────────────────── */}
-        <div
-          className="flex divide-x divide-black border-b border-black overflow-x-auto"
-          aria-label="Platform statistics"
-        >
-          {[
-            { label: 'Open roles', value: String(jobs.length) },
-            { label: 'Companies hiring', value: String(companyCount) },
-            { label: 'Remote roles', value: String(remoteCount) },
-            { label: 'Added this week', value: String(recentCount) },
-            { label: 'Specialisations', value: '5' },
-          ].map((s) => (
-            <div key={s.label} className="flex-1 px-6 py-5 min-w-[120px]">
-              <p className="text-2xl font-bold tabular-nums">{s.value}</p>
-              <p className="text-xs text-black/40 mt-1">{s.label}</p>
-            </div>
-          ))}
-        </div>
-
         {/* ── Main layout: job grid + sidebar ─────────────── */}
         <div className="flex divide-x divide-black">
 
           {/* Left: category tiles + sort bar + mosaic job grid */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 px-4 sm:px-6">
 
             {/* Category tiles */}
             <div
