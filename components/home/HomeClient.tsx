@@ -98,7 +98,6 @@ export default function HomeClient({ jobs, news }: Props) {
   const [location, setLocation] = useState('')
   const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all')
   const [sort, setSort] = useState<SortKey>('newest')
-  const [showAll, setShowAll] = useState(false)
   const browseRef = useRef<HTMLDivElement>(null)
 
   const companyCount = useMemo(() => new Set(jobs.map((j) => j.company)).size, [jobs])
@@ -151,9 +150,9 @@ export default function HomeClient({ jobs, news }: Props) {
         className="relative flex flex-col items-center justify-center px-6 py-28 sm:py-36 text-center overflow-hidden"
         style={{
           backgroundImage:
-            'radial-gradient(circle, rgba(0,0,0,0.11) 1.2px, transparent 1.2px)',
+            'radial-gradient(circle, rgba(0,0,0,0.07) 1.2px, transparent 1.2px)',
           backgroundSize: '22px 22px',
-          backgroundColor: '#f3f3f3',
+          backgroundColor: '#ffffff',
         }}
       >
         <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] font-black uppercase tracking-tight leading-none text-balance max-w-4xl">
@@ -252,26 +251,15 @@ export default function HomeClient({ jobs, news }: Props) {
         </button>
       </section>
 
-      {/* ── GRADIENT BRIDGE ─────────────────────────────────────────────── */}
-      <div
-        aria-hidden="true"
-        style={{
-          height: 72,
-          background: 'linear-gradient(to bottom, #f3f3f3 0%, #ffffff 100%)',
-          borderBottom: '1px solid black',
-          marginBottom: -1,
-        }}
-      />
-
       {/* ── BROWSE ───────────────────────────────────────────────────────── */}
       <div
         ref={browseRef}
         id="jobs"
         style={{
           backgroundImage:
-            'radial-gradient(circle, rgba(0,0,0,0.06) 1.2px, transparent 1.2px)',
+            'radial-gradient(circle, rgba(0,0,0,0.07) 1.2px, transparent 1.2px)',
           backgroundSize: '22px 22px',
-          backgroundColor: '#f5f5f5',
+          backgroundColor: '#ffffff',
         }}
       >
         {/* ── Stats strip ─────────────────────────────────── */}
@@ -407,7 +395,7 @@ export default function HomeClient({ jobs, news }: Props) {
                   role="list"
                   className="grid grid-cols-1 border-l border-t border-black"
                 >
-                  {filtered.slice(0, showAll ? undefined : JOBS_PREVIEW).map((job) => (
+                  {filtered.slice(0, JOBS_PREVIEW).map((job) => (
                     <li
                       key={job.id}
                       className="border-r border-b border-black bg-white/75 backdrop-blur-sm"
@@ -417,21 +405,18 @@ export default function HomeClient({ jobs, news }: Props) {
                   ))}
                 </ul>
 
-                {/* Explore more / collapse */}
-                {filtered.length > JOBS_PREVIEW && (
-                  <div className="border-l border-r border-b border-black bg-white/70 backdrop-blur-sm px-8 py-6 flex items-center justify-between gap-4">
-                    <p className="text-xs text-black/40 tabular-nums">
-                      Showing {showAll ? filtered.length : Math.min(JOBS_PREVIEW, filtered.length)} of {filtered.length} roles
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setShowAll((v) => !v)}
-                      className="border border-black px-6 py-2.5 text-xs font-semibold uppercase tracking-wide transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
-                    >
-                      {showAll ? 'Show Less' : 'Explore More Jobs'}
-                    </button>
-                  </div>
-                )}
+                {/* Explore more jobs */}
+                <div className="border-l border-r border-b border-black bg-white/70 backdrop-blur-sm px-8 py-6 flex items-center justify-between gap-4">
+                  <p className="text-xs text-black/40 tabular-nums">
+                    Showing {Math.min(JOBS_PREVIEW, filtered.length)} of {filtered.length} roles
+                  </p>
+                  <Link
+                    href="/jobs"
+                    className="border border-black px-6 py-2.5 text-xs font-semibold uppercase tracking-wide transition-colors hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+                  >
+                    Explore More Jobs →
+                  </Link>
+                </div>
               </>
             )}
           </div>
@@ -525,7 +510,7 @@ export default function HomeClient({ jobs, news }: Props) {
             backgroundImage:
               'radial-gradient(circle, rgba(0,0,0,0.07) 1.2px, transparent 1.2px)',
             backgroundSize: '22px 22px',
-            backgroundColor: '#f9f9f9',
+            backgroundColor: '#ffffff',
           }}
         >
           <p className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2">
