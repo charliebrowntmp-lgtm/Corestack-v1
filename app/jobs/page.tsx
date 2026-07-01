@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getJobs } from '@/lib/api'
 import JobGrid from '@/components/jobs/JobGrid'
@@ -39,6 +40,15 @@ export default async function JobsPage({ searchParams }: PageProps) {
         <Suspense fallback={null}>
           <JobFilters />
         </Suspense>
+
+        <div className="mt-3 mb-2">
+          <Link
+            href="/dashboard/alerts"
+            className="text-xs text-black/40 hover:text-black transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+          >
+            Get alerts for this search →
+          </Link>
+        </div>
 
         <div className="mt-8">
           <p className="text-sm text-black/50 mb-4 tabular-nums">
