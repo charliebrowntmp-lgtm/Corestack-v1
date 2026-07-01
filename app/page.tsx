@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { getJobs, getNews } from '@/lib/api'
-import { MOCK_JOBS } from '@/lib/mock-jobs'
+import { createClient } from '@/lib/supabase/server'
+import { getNews } from '@/lib/api'
 import { MOCK_NEWS } from '@/lib/mock-news'
 import HomeClient from '@/components/home/HomeClient'
 
@@ -11,13 +11,15 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const [dbJobs, dbNews] = await Promise.all([
-    getJobs().catch(() => []),
-    getNews().catch(() => []),
-  ])
+  const supabase = await createClient()
+  const { data: jobs } = await supabase
+    .from('jobs')
+    .select('*')
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
 
-  const jobs = dbJobs.length > 0 ? dbJobs : MOCK_JOBS
+  const dbNews = await getNews().catch(() => [])
   const news = dbNews.length > 0 ? dbNews : MOCK_NEWS
 
-  return <HomeClient jobs={jobs} news={news} />
+  return <HomeClient jobs={jobs ?? []} news={news} />
 }

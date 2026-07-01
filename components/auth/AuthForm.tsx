@@ -12,6 +12,7 @@ export default function AuthForm({ mode }: Props) {
   const router = useRouter()
   const params = useSearchParams()
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const errorRef = useRef<HTMLParagraphElement>(null)
 
@@ -24,6 +25,16 @@ export default function AuthForm({ mode }: Props) {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
 
+    if (mode === 'signup') {
+      const confirm = formData.get('confirmPassword') as string
+      if (password !== confirm) {
+        setError('Passwords do not match.')
+        setLoading(false)
+        setTimeout(() => errorRef.current?.focus(), 0)
+        return
+      }
+    }
+
     const supabase = createClient()
     const { error: authError } =
       mode === 'signin'
@@ -33,14 +44,30 @@ export default function AuthForm({ mode }: Props) {
     if (authError) {
       setError(authError.message)
       setLoading(false)
-      // Focus the error message for screen readers
       setTimeout(() => errorRef.current?.focus(), 0)
+      return
+    }
+
+    if (mode === 'signup') {
+      setSuccess(true)
+      setLoading(false)
       return
     }
 
     const next = params.get('next') ?? '/dashboard'
     router.push(next)
     router.refresh()
+  }
+
+  if (success) {
+    return (
+      <div className="border border-black px-5 py-6 bg-[#3ecf8e]/10">
+        <p className="text-sm font-medium">Check your email to confirm your account</p>
+        <p className="text-xs text-black/50 mt-1">
+          We sent a confirmation link to your inbox. Click it to activate your account.
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -80,6 +107,24 @@ export default function AuthForm({ mode }: Props) {
         />
       </div>
 
+      {mode === 'signup' && (
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="auth-confirm-password" className="text-sm font-medium">
+            Confirm Password
+          </label>
+          <input
+            id="auth-confirm-password"
+            name="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            required
+            placeholder="Confirm password…"
+            minLength={6}
+            className="border border-black px-3 py-2.5 text-sm focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-offset-0 outline-none"
+          />
+        </div>
+      )}
+
       {error && (
         <p
           ref={errorRef}
@@ -104,7 +149,6 @@ export default function AuthForm({ mode }: Props) {
           : 'Create Account'}
       </button>
 
-      {/* OAuth placeholder slots — disabled for now */}
       <div className="border-t border-black pt-4">
         <button
           type="button"

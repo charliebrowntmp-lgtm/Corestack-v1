@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { Search, MapPin, ChevronDown, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -9,6 +9,7 @@ import type { Category } from '@/lib/types'
 import { CATEGORY_LABELS, CATEGORY_LIST } from '@/lib/constants'
 import { formatSalary, daysAgo } from '@/lib/utils'
 import CompanyLogo from '@/components/jobs/CompanyLogo'
+import { track } from '@/lib/analytics'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -111,6 +112,10 @@ export default function HomeClient({ jobs, news }: Props) {
   const [sort, setSort] = useState<SortKey>('newest')
   const browseRef = useRef<HTMLDivElement>(null)
 
+  useEffect(() => {
+    track('pageview', { page: 'home' })
+  }, [])
+
   const companyCount = useMemo(() => new Set(jobs.map((j) => j.company)).size, [jobs])
   const remoteCount = useMemo(() => jobs.filter((j) => j.remote).length, [jobs])
   const recentCount = useMemo(
@@ -143,6 +148,7 @@ export default function HomeClient({ jobs, news }: Props) {
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
+    track('job_search', { keyword, location })
     browseRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
@@ -244,7 +250,7 @@ export default function HomeClient({ jobs, news }: Props) {
                 <button
                   key={cat}
                   type="button"
-                  onClick={() => setActiveCategory(cat)}
+                  onClick={() => { setActiveCategory(cat); track('category_filter', { category: cat }) }}
                   className={[
                     'px-4 py-2 text-xs font-medium whitespace-nowrap border-t border-b border-r border-black transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none',
                     i === 0 ? 'border-l' : '',
@@ -316,7 +322,7 @@ export default function HomeClient({ jobs, news }: Props) {
                   <button
                     key={cat}
                     type="button"
-                    onClick={() => setActiveCategory(cat)}
+                    onClick={() => { setActiveCategory(cat); track('category_filter', { category: cat }) }}
                     aria-pressed={isActive}
                     className={[
                       'p-5 text-left transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none relative',
@@ -393,14 +399,18 @@ export default function HomeClient({ jobs, news }: Props) {
             {/* Mosaic job cards */}
             {filtered.length === 0 ? (
               <div className="py-20 text-center bg-white/70 backdrop-blur-sm border-b border-black">
-                <p className="text-sm text-black/40">No roles match your search.</p>
-                <button
-                  type="button"
-                  onClick={clearFilters}
-                  className="mt-3 text-xs underline hover:text-black text-black/40"
-                >
-                  Clear filters
-                </button>
+                <p className="text-sm text-black/40">
+                  {jobs.length === 0 ? 'No jobs yet — check back soon.' : 'No roles match your search.'}
+                </p>
+                {jobs.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="mt-3 text-xs underline hover:text-black text-black/40"
+                  >
+                    Clear filters
+                  </button>
+                )}
               </div>
             ) : (
               <>
@@ -660,6 +670,7 @@ function MosaicJobCard({ job }: { job: Job }) {
   return (
     <Link
       href={`/jobs/${job.id}`}
+      onClick={() => track('job_click', { job_id: job.id, title: job.title, company: job.company })}
       className="flex items-start gap-6 px-8 py-7 min-h-[140px] group transition-colors duration-150 hover:bg-black/[0.02] focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none"
     >
       {/* Left: logo */}
