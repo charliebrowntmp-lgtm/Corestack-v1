@@ -7,9 +7,17 @@ import JobFilters from '@/components/jobs/JobFilters'
 import type { JobFilters as Filters, Category } from '@/lib/types'
 
 export const metadata: Metadata = {
-  title: 'Browse Jobs',
+  title: 'Data Center Jobs — Corestack',
   description:
-    'Browse data center jobs across operations, construction, electrical, cooling, and networking.',
+    'Browse open roles in data center construction, operations, critical power, cooling, and networking. The job board for infrastructure professionals.',
+  openGraph: {
+    title: 'Data Center Jobs — Corestack',
+    description:
+      'Browse open roles in data center construction, operations, critical power, cooling, and networking.',
+    url: 'https://corestack-v1-5nci.vercel.app/jobs',
+    siteName: 'Corestack',
+    type: 'website',
+  },
 }
 
 interface PageProps {

@@ -19,10 +19,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     default: 'Corestack — Data Center Jobs',
-    template: '%s | Corestack',
+    template: '%s — Corestack',
   },
   description:
-    'The job board for the people building the cloud. Data center operations, construction, electrical, cooling, and networking roles.',
+    'The job board for the people building the cloud. Operations, construction, power, cooling, and networking roles across the data center industry.',
+  metadataBase: new URL('https://corestack-v1-5nci.vercel.app'),
+  openGraph: {
+    siteName: 'Corestack',
+    type: 'website',
+  },
 }
 
 export default async function RootLayout({

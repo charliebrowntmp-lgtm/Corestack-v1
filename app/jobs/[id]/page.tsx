@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
+import { createClient } from '@/lib/supabase/server'
 import { getJob } from '@/lib/api'
 import { MOCK_JOBS } from '@/lib/mock-jobs'
 import { CATEGORY_LABELS } from '@/lib/constants'
@@ -25,11 +26,37 @@ async function resolveJob(id: string): Promise<Job | null> {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params
-  const job = await resolveJob(id)
-  if (!job) return { title: 'Job Not Found' }
+  const supabase = await createClient()
+  const { data: job } = await supabase
+    .from('jobs')
+    .select('title, company, location, salary_min, salary_max')
+    .eq('id', id)
+    .single()
+
+  if (!job) return { title: 'Job not found — Corestack' }
+
+  const salaryText =
+    job.salary_min && job.salary_max
+      ? ` · $${(job.salary_min / 1000).toFixed(0)}K–$${(job.salary_max / 1000).toFixed(0)}K`
+      : ''
+
+  const description = `${job.title} at ${job.company} in ${job.location}${salaryText}. Apply on Corestack — the job board for data center and infrastructure professionals.`
+
   return {
     title: `${job.title} at ${job.company} — Corestack`,
-    description: `${job.title} at ${job.company} in ${job.location}.${job.remote ? ' Remote available.' : ''} ${job.salary_min ? `Salary: ${formatSalary(job.salary_min, job.salary_max)}.` : ''}`,
+    description,
+    openGraph: {
+      title: `${job.title} at ${job.company}`,
+      description,
+      url: `https://corestack-v1-5nci.vercel.app/jobs/${id}`,
+      siteName: 'Corestack',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${job.title} at ${job.company}`,
+      description,
+    },
   }
 }
 
@@ -68,6 +95,42 @@ export default async function JobDetailPage({ params }: PageProps) {
   const similarJobs = MOCK_JOBS
     .filter((j) => j.category === job.category && j.id !== job.id)
     .slice(0, 3)
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'JobPosting',
+    title: job.title,
+    description: job.description,
+    hiringOrganization: {
+      '@type': 'Organization',
+      name: job.company,
+    },
+    jobLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: job.location,
+        addressCountry: 'US',
+      },
+    },
+    jobLocationType: job.remote ? 'TELECOMMUTE' : undefined,
+    baseSalary:
+      job.salary_min && job.salary_max
+        ? {
+            '@type': 'MonetaryAmount',
+            currency: 'USD',
+            value: {
+              '@type': 'QuantitativeValue',
+              minValue: job.salary_min,
+              maxValue: job.salary_max,
+              unitText: 'YEAR',
+            },
+          }
+        : undefined,
+    datePosted: job.created_at,
+    employmentType: 'FULL_TIME',
+    directApply: true,
+  }
 
   return (
     <div>
@@ -317,6 +380,10 @@ export default async function JobDetailPage({ params }: PageProps) {
           </div>
         </aside>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </div>
   )
 }
