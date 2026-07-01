@@ -12,11 +12,17 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const supabase = await createClient()
-  const { data: jobs } = await supabase
+  const { data: jobs, error: jobsError } = await supabase
     .from('jobs')
     .select('*')
     .eq('status', 'active')
+    .order('is_featured', { ascending: false })
     .order('created_at', { ascending: false })
+    .limit(10)
+
+  if (jobsError) {
+    console.error('Failed to fetch jobs:', jobsError.message)
+  }
 
   const dbNews = await getNews().catch(() => [])
   const news = dbNews.length > 0 ? dbNews : MOCK_NEWS
