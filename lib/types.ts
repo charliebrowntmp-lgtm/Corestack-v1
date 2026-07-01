@@ -4,6 +4,10 @@ export type Category =
   | 'electrical_power'
   | 'cooling_mechanical'
   | 'networking'
+  | 'fiber_networks'
+  | 'power_generation'
+  | 'energy_storage'
+  | 'semiconductor_fabrication'
 
 export type JobStatus = 'active' | 'closed' | 'draft'
 export type ProfileRole = 'seeker' | 'employer'

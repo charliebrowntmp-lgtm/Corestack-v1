@@ -38,6 +38,10 @@ const CAT_COLOR: Record<string, string> = {
   electrical_power: '#eab308',
   cooling_mechanical: '#8b5cf6',
   networking: '#22c55e',
+  fiber_networks: '#06b6d4',
+  power_generation: '#ef4444',
+  energy_storage: '#10b981',
+  semiconductor_fabrication: '#a855f7',
 }
 
 function getBadge(job: Job): { label: string; cls: string } | null {
