@@ -158,11 +158,12 @@ export default function HomeClient({ jobs, news }: Props) {
         style={{ backgroundColor: '#0a0a0a' }}
       >
         {/* Background photo */}
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src="/backgroundimage/hero-datacenter.png"
           alt=""
-          fill
-          priority
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full"
           style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
         />
         {/* Gradient: dark at top for legibility → transparent mid → white at bottom */}
