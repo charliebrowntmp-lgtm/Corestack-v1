@@ -155,9 +155,13 @@ export default function HomeClient({ jobs, news }: Props) {
       <section
         className="relative flex flex-col items-center justify-center px-6 py-28 sm:py-36 text-center overflow-hidden"
         style={{
-          backgroundImage:
-            'radial-gradient(circle, rgba(0,0,0,0.07) 1.2px, transparent 1.2px)',
-          backgroundSize: '22px 22px',
+          backgroundImage: [
+            'linear-gradient(to bottom, rgba(255,255,255,0.68) 0%, rgba(255,255,255,0.48) 35%, rgba(255,255,255,0.88) 72%, rgba(255,255,255,1) 100%)',
+            "url('/backgroundimage/hero-datacenter.png')",
+          ].join(', '),
+          backgroundSize: '100% 100%, cover',
+          backgroundPosition: '0 0, center top',
+          backgroundRepeat: 'no-repeat, no-repeat',
           backgroundColor: '#ffffff',
         }}
       >
@@ -244,10 +248,7 @@ export default function HomeClient({ jobs, news }: Props) {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             {LOGO_STRIP_COMPANIES.map((c) => (
-              <div key={c} className="flex flex-col items-center gap-1.5">
-                <CompanyLogo company={c} size={52} round />
-                <span className="text-[10px] text-black/30 whitespace-nowrap">{c}</span>
-              </div>
+              <CompanyLogo key={c} company={c} size={72} radius="14px" />
             ))}
           </div>
         </div>

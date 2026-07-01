@@ -45,13 +45,15 @@ function initials(name: string) {
 interface Props {
   company: string
   size?: number
-  /** Pass true to render a circle instead of a square (use inline borderRadius to bypass global reset) */
+  /** Pass true to render a circle (50% borderRadius) */
   round?: boolean
+  /** Explicit border-radius override — takes precedence over round */
+  radius?: string
 }
 
-export default function CompanyLogo({ company, size = 36, round = false }: Props) {
+export default function CompanyLogo({ company, size = 36, round = false, radius }: Props) {
   const logo = REAL_LOGOS[company]
-  const borderRadius = round ? '50%' : 0
+  const borderRadius = radius ?? (round ? '50%' : 0)
 
   if (logo) {
     return (
