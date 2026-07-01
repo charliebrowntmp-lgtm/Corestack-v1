@@ -83,6 +83,13 @@ export default async function DashboardPage() {
               </p>
               <div className="space-y-2">
                 <Link
+                  href="/dashboard/saved"
+                  className="flex items-center justify-between px-4 py-3 border border-black text-sm font-medium transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none group"
+                >
+                  Saved Jobs
+                  <span className="text-black/30 group-hover:text-white transition-colors">→</span>
+                </Link>
+                <Link
                   href="/jobs"
                   className="flex items-center justify-between px-4 py-3 border border-black text-sm font-medium transition-colors hover:bg-[#3ecf8e] hover:text-black focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none group"
                 >

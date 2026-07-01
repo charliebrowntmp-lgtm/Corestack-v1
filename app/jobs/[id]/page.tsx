@@ -8,6 +8,7 @@ import { CATEGORY_LABELS } from '@/lib/constants'
 import { formatSalary, daysAgo } from '@/lib/utils'
 import CompanyLogo from '@/components/jobs/CompanyLogo'
 import AuthGate from '@/components/auth/AuthGate'
+import SaveJobButton from '@/components/SaveJobButton'
 import type { Job } from '@/lib/types'
 
 interface PageProps {
@@ -182,7 +183,12 @@ export default async function JobDetailPage({ params }: PageProps) {
             <p className="text-xs font-bold uppercase tracking-widest text-black/40 mb-4">
               Apply for this role
             </p>
-            <AuthGate jobId={job.id} />
+            <div className="flex items-start gap-2">
+              <div className="flex-1">
+                <AuthGate jobId={job.id} />
+              </div>
+              <SaveJobButton jobId={job.id} />
+            </div>
             <p className="mt-3 text-[11px] text-black/35">
               You'll be redirected to {job.company}'s application page.
             </p>
@@ -198,7 +204,12 @@ export default async function JobDetailPage({ params }: PageProps) {
               <p className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-4">
                 Apply for this role
               </p>
-              <AuthGate jobId={job.id} />
+              <div className="flex items-start gap-2">
+                <div className="flex-1">
+                  <AuthGate jobId={job.id} />
+                </div>
+                <SaveJobButton jobId={job.id} />
+              </div>
               <p className="mt-3 text-[11px] text-black/35">
                 You'll be redirected to {job.company}'s application page after confirming.
               </p>
