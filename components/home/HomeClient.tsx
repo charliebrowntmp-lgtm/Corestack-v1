@@ -156,20 +156,21 @@ export default function HomeClient({ jobs, news }: Props) {
         className="relative flex flex-col items-center justify-center px-6 py-28 sm:py-36 text-center overflow-hidden"
         style={{
           backgroundImage: [
-            'linear-gradient(to bottom, rgba(255,255,255,0.68) 0%, rgba(255,255,255,0.48) 35%, rgba(255,255,255,0.88) 72%, rgba(255,255,255,1) 100%)',
+            'linear-gradient(to bottom, transparent 55%, rgba(255,255,255,1) 100%)',
+            'linear-gradient(to bottom, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.48) 45%, rgba(0,0,0,0) 72%)',
             "url('/backgroundimage/hero-datacenter.png')",
           ].join(', '),
-          backgroundSize: '100% 100%, cover',
-          backgroundPosition: '0 0, center top',
-          backgroundRepeat: 'no-repeat, no-repeat',
-          backgroundColor: '#ffffff',
+          backgroundSize: '100% 100%, 100% 100%, cover',
+          backgroundPosition: '0 0, 0 0, center 40%',
+          backgroundRepeat: 'no-repeat, no-repeat, no-repeat',
+          backgroundColor: '#0a0a0a',
         }}
       >
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] font-black uppercase tracking-tight leading-none text-balance max-w-4xl">
+        <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] font-black uppercase tracking-tight leading-none text-balance max-w-4xl text-white">
           Infrastructure Jobs For The People Who Keep The World Running.
         </h1>
 
-        <p className="mt-6 text-base sm:text-lg text-black/50 max-w-[30rem] leading-relaxed">
+        <p className="mt-6 text-base sm:text-lg max-w-[30rem] leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
           Corestack aggregates data center and AI infrastructure roles from top
           employers&thinsp;—&thinsp;updated daily.
         </p>
@@ -177,7 +178,7 @@ export default function HomeClient({ jobs, news }: Props) {
         {/* Two-field search bar */}
         <form
           onSubmit={handleSearch}
-          className="mt-9 flex w-full max-w-3xl bg-white border border-black"
+          className="mt-9 flex w-full max-w-3xl bg-white border border-white/80"
         >
           <div className="flex flex-1 items-center border-r border-black px-4 min-w-0">
             <Search size={14} className="text-black/30 flex-shrink-0 mr-3" aria-hidden="true" />
@@ -241,9 +242,9 @@ export default function HomeClient({ jobs, news }: Props) {
           })}
         </div>
 
-        {/* Hiring companies strip — circular logo tiles */}
+        {/* Hiring companies strip — logo tiles */}
         <div className="mt-12 flex flex-col items-center gap-3">
-          <p className="text-[10px] uppercase tracking-widest text-black/30 font-medium">
+          <p className="text-[10px] uppercase tracking-widest font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>
             Roles from top employers
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
@@ -257,10 +258,11 @@ export default function HomeClient({ jobs, news }: Props) {
         <button
           type="button"
           onClick={() => browseRef.current?.scrollIntoView({ behavior: 'smooth' })}
-          className="mt-8 flex items-center gap-2.5 text-sm text-black/40 hover:text-black transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+          className="mt-8 flex items-center gap-2.5 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-[#3ecf8e] outline-none"
+          style={{ color: 'rgba(255,255,255,0.45)' }}
         >
           Scroll down
-          <span className="w-7 h-7 border border-black/20 flex items-center justify-center">
+          <span className="w-7 h-7 flex items-center justify-center" style={{ border: '1px solid rgba(255,255,255,0.25)' }}>
             <ChevronDown size={14} aria-hidden="true" />
           </span>
         </button>
