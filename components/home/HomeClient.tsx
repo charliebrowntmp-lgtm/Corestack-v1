@@ -267,7 +267,12 @@ export default function HomeClient({ jobs, news }: Props) {
       <div
         ref={browseRef}
         id="jobs"
-        style={{ background: '#ffffff' }}
+        style={{
+          backgroundImage:
+            'radial-gradient(circle, rgba(0,0,0,0.06) 1.2px, transparent 1.2px)',
+          backgroundSize: '22px 22px',
+          backgroundColor: '#f5f5f5',
+        }}
       >
         {/* ── Stats strip ─────────────────────────────────── */}
         <div
@@ -315,7 +320,7 @@ export default function HomeClient({ jobs, news }: Props) {
                     className={[
                       'p-5 text-left transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#3ecf8e] focus-visible:ring-inset outline-none relative',
                       i > 0 ? 'border-l border-black' : '',
-                      isActive ? 'bg-white' : 'hover:bg-white/60',
+                      isActive ? 'bg-white/80 backdrop-blur-sm' : 'hover:bg-white/50',
                     ].join(' ')}
                   >
                     {/* Colour dot */}
@@ -342,7 +347,7 @@ export default function HomeClient({ jobs, news }: Props) {
             </div>
 
             {/* Sort bar */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-black bg-white/70 sticky top-0 z-10">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-black bg-white/60 backdrop-blur-md sticky top-0 z-10">
               <div className="flex items-center gap-3">
                 <span className="text-xs text-black/50">
                   <span className="font-semibold text-black tabular-nums">{filtered.length}</span>{' '}
@@ -386,7 +391,7 @@ export default function HomeClient({ jobs, news }: Props) {
 
             {/* Mosaic job cards */}
             {filtered.length === 0 ? (
-              <div className="py-20 text-center bg-white border-b border-black">
+              <div className="py-20 text-center bg-white/70 backdrop-blur-sm border-b border-black">
                 <p className="text-sm text-black/40">No roles match your search.</p>
                 <button
                   type="button"
@@ -405,7 +410,7 @@ export default function HomeClient({ jobs, news }: Props) {
                   {filtered.slice(0, showAll ? undefined : JOBS_PREVIEW).map((job) => (
                     <li
                       key={job.id}
-                      className="border-r border-b border-black bg-white"
+                      className="border-r border-b border-black bg-white/75 backdrop-blur-sm"
                     >
                       <MosaicJobCard job={job} />
                     </li>
@@ -414,7 +419,7 @@ export default function HomeClient({ jobs, news }: Props) {
 
                 {/* Explore more / collapse */}
                 {filtered.length > JOBS_PREVIEW && (
-                  <div className="border-l border-r border-b border-black bg-white px-8 py-6 flex items-center justify-between gap-4">
+                  <div className="border-l border-r border-b border-black bg-white/70 backdrop-blur-sm px-8 py-6 flex items-center justify-between gap-4">
                     <p className="text-xs text-black/40 tabular-nums">
                       Showing {showAll ? filtered.length : Math.min(JOBS_PREVIEW, filtered.length)} of {filtered.length} roles
                     </p>
@@ -433,7 +438,7 @@ export default function HomeClient({ jobs, news }: Props) {
 
           {/* Right sidebar */}
           <aside className="w-56 flex-shrink-0 hidden xl:block" aria-label="Market data and news">
-            <div className="sticky top-0 divide-y divide-black">
+            <div className="sticky top-0 divide-y divide-black bg-white/75 backdrop-blur-sm">
               {/* Market Pulse */}
               <div className="px-5 py-6">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-5">
@@ -567,7 +572,7 @@ export default function HomeClient({ jobs, news }: Props) {
         </div>
 
         {/* Certifications + programs grid */}
-        <div className="flex divide-x divide-black border-b border-black">
+        <div className="flex divide-x divide-black border-b border-black bg-white/70 backdrop-blur-sm">
 
           {/* Certs — 3 cells */}
           <div className="flex-1 min-w-0">
@@ -629,7 +634,7 @@ export default function HomeClient({ jobs, news }: Props) {
         </div>
 
         {/* CTA row */}
-        <div className="flex items-center justify-between gap-6 px-8 py-6 bg-white">
+        <div className="flex items-center justify-between gap-6 px-8 py-6 bg-white/70 backdrop-blur-sm">
           <p className="text-sm text-black/50">
             <span className="font-semibold text-black">6 programs · 6 certifications · 5 schools</span>
             {' '}tracked in the Corestack directory.
